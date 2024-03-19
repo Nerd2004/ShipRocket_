@@ -1,0 +1,210 @@
+<!-- ======================= Cards ================== -->
+
+ <div class="cardBox">
+    <div class="card">
+        <div>
+            <div class="numbers">1,504</div>
+            <div class="cardName">Daily Views</div>
+        </div>
+
+        <div class="iconBx">
+            <ion-icon name="eye-outline"></ion-icon>
+        </div>
+    </div>
+
+    <div class="card">
+        <div>
+            <div class="numbers">80</div>
+            <div class="cardName">Sales</div>
+        </div>
+
+        <div class="iconBx">
+            <ion-icon name="cart-outline"></ion-icon>
+        </div>
+    </div>
+
+    <div class="card">
+        <div>
+            <div class="numbers">284</div>
+            <div class="cardName">Comments</div>
+        </div>
+
+        <div class="iconBx">
+            <ion-icon name="chatbubbles-outline"></ion-icon>
+        </div>
+    </div>
+
+    <div class="card">
+        <div>
+            <div class="numbers">$7,842</div>
+            <div class="cardName">Earning</div>
+        </div>
+
+        <div class="iconBx">
+            <ion-icon name="cash-outline"></ion-icon>
+        </div>
+    </div>
+</div>
+
+<!-- ================ Order Details List ================= -->
+<div class="details">
+  <div class="recentOrders">
+      <div class="cardHeader">
+          <h2>Monthly Profit analysis.</h2>
+          <!-- <a href="#" class="btn">View All</a> -->
+      </div>
+
+      <!-- <h2 class="chart-heading">Monthly and daily profit analysis.</h2> -->
+  
+    <div class="programming-stats">
+      <div class="chart-container">
+        <canvas class="my-chart"></canvas>
+      </div>
+
+      <div class="details">
+        <ul></ul>
+      </div>
+
+   </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript">
+    const data = new Array()
+    const expenses= new Array();
+    data.push(Number('<%-data[0]%>'))
+    data.push(Number('<%-data[1]%>'))
+    data.push(Number('<%-data[2]%>'))
+    data.push(Number('<%-data[3]%>'))
+    data.push(Number('<%-data[4]%>'))
+    expenses.push(Number('<%-expenses[0]%>'))
+    expenses.push(Number('<%-expenses[1]%>'))
+    expenses.push(Number('<%-expenses[2]%>'))
+    expenses.push(Number('<%-expenses[3]%>'))
+    expenses.push(Number('<%-expenses[4]%>'))
+    // console.log(data,expenses);
+    const chartData = {
+  labels: ["Dairy products", "Home decor", "Clothing&footware", "Kitchenware", "Others"],
+  data:data,
+  expenses:expenses,
+  salesP: [],
+  MonthlyProfittt: [],
+};
+
+const totalRevenue = (chartData) => {
+  let sum = 0;
+  for (let i = 0; i < chartData.data.length; i++) {
+    sum += chartData.data[i];
+  }
+  return sum;
+};   
+
+const totalExpense = (chartData) => {
+  let sum1 = 0;
+  for (let i = 0; i < chartData.expenses.length; i++) {
+    sum1 += chartData.expenses[i];
+  }
+  return sum1;
+};
+
+const Texpense = totalExpense(chartData);
+const Trevenue = totalRevenue(chartData);
+
+const monthlyProfit = (Texpense, Trevenue) => {
+  return (Trevenue - Texpense);
+};
+
+const EMprofit = (chartData)=>{
+   const Meach = [];
+   for(let i =0;i< chartData.data.length;i++){
+    const revenue = chartData.data[i];
+    const expense = chartData.expenses[i];
+    const done = ((revenue - expense));
+    Meach.push(done);
+  }
+  return Meach;
+   }
+ chartData.MonthlyProfittt = EMprofit(chartData);
+ 
+const Mprofit = monthlyProfit(Texpense, Trevenue);
+
+const calculatePercentages = (chartData) => {
+  const total = totalRevenue(chartData);
+  const percentages = [];
+  for (let i = 0; i < chartData.data.length; i++) {
+    const percentage = (chartData.data[i] / total) * 100;
+   let p =  percentage.toFixed(3);
+    percentages.push(p);
+  }
+  return percentages;
+};
+
+chartData.salesP = calculatePercentages(chartData);
+
+const profitData = [
+  { category: 'Dairy products', dailyProfit: 200 },
+  { category: 'Home decor', dailyProfit: 150},
+  { category: 'Clothing&footware', dailyProfit: 250 },
+  { category: 'Kitchenware', dailyProfit: 180 },
+  { category: 'Others', dailyProfit: 300 },
+];
+
+const myChart = document.querySelector(".my-chart");
+const ul = document.querySelector(".programming-stats .details ul");
+
+new Chart(myChart, {
+  type: "doughnut",
+  data: {
+    labels: chartData.labels,
+    datasets: [
+      {
+        label: "Sales percentage",
+        data: chartData.salesP,
+      },
+    ],
+  },
+  options: {
+    borderWidth: 14,
+    borderRadius: 10,
+    hoverBorderWidth: 0,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    tooltips: {
+      callbacks: {
+        label: (tooltipItem, data) => {
+          const category = data.labels[tooltipItem.index];
+          const profit = profitData.find((d) => d.category === category);
+          const dailyProfit = profit.dailyProfit;
+         const Mprofitt = chartData.MonthlyProfittt;
+          return [
+            `Category: ${category}`,
+            `Daily Profit: Rs.${dailyProfit}`,
+            `Monthly Profit: Rs.${Mprofitt}`,
+          ];
+        },
+      },
+    },
+  },
+});
+
+const populateUl = () => {
+  chartData.labels.forEach((l, i) => {
+    let li = document.createElement("li");
+    const profit = profitData.find((d) => d.category === l);
+    const dailyProfit = profit.dailyProfit;
+
+    li.innerHTML = `${l}: <span class='percentage'>sales percentage:${chartData.salesP[i]}%</span><br> Monthly Profit:Rs.${chartData.MonthlyProfittt[i]}`;
+    ul.appendChild(li);
+  });
+
+};
+   
+    let li = document.createElement("li");
+    li.innerHTML = `Total Monthly Profit: Rs.${Mprofit}`;
+    ul.appendChild(li);
+  
+
+populateUl();
+</script> 

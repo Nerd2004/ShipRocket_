@@ -1,0 +1,52 @@
+
+<div class="listof">
+    <% Orders.forEach(function(Orders,index) { %>
+    <div class="single-item">
+        <% var product = prod.find(x => x.name == Orders.name) %>
+        <div class="left-set">
+          <img src="img/<%= product.image %>" alt="" />
+          <!-- <img src="http://images.nike.com/is/image/DotCom/PDP_HERO_S/NIKE-YA-LEBRON-MAX-AIR-BP-BA5124_010_A.jpg" alt="" /> -->
+        </div>
+        <div class="right-set">
+            <div class="description">
+                <p><b>From: </b><%=Orders.from%></p>
+            </div>
+          <div class="name"><%= product.name %></div>
+          <div class="subname"><%= product.category %></div>
+          <div class="price">₹<%= product.sell%></div>
+          <div class="description">
+          <p><b>Order Date: </b><%=Orders.date%></p>
+          <p><b>Order Time: </b><%=Orders.time%></p>
+          </div>
+          
+          <div class="name">Qty:<%= Orders.quantity%></div><br>
+          <div class="field padding-bottom--24">
+            <% var status = Orders.accepted %>
+            <% if(status == 'Accepted') {%>
+            <button class="btn btn-primary" style="background-color: green;"><%= status%></button>
+            <% } else if(status == 'Declined') {%>
+            <button class="btn btn-primary" style="background-color: red;"><%= status%></button>
+            <% } else {%>
+            <a href="/accepted/<%= Orders._id%>"><button class="btn btn-primary" style="background-color: green;">Accept</button></a>
+            <a href="/declined/<%= Orders._id%>"><button class="btn btn-primary" href ="#" style="background-color: red;">Decline</button></a>
+            <% } %>
+        </div>
+        </div>
+    </div>
+    <% }) %>
+</div>
+
+
+  <script>
+    $("ul li:nth-child(1)").click(function(){
+  $(".left-set img:nth-child(2)").animate({
+    opacity: 1
+  })
+})
+
+$("ul li:nth-child(2)").click(function(){
+  $(".left-set img:nth-child(2)").animate({
+    opacity: 0
+  })
+})
+  </script>

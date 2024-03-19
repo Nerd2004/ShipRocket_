@@ -1,0 +1,25 @@
+<section class="product">
+  <% if(prod != '') { %>
+    <% prod.forEach(function(prod, index){ %>
+    <div class="content" >
+      <div class="box">
+        <div class="top">
+          <a href="/neworder/<%=prod.name %>"><i class="fas fa-plus"></i></a>
+        </div>
+        <div class="img1">
+          <img src="img/<%= prod.image %>" alt="">
+        </div>
+        <p><%= prod.name %></p>
+        <small>Product category: 
+        <div class="prodcat"><%= prod.category %></small></div>
+        <div class="cart">
+          <div class="add">
+            Quantity:      
+            <i class="prodqty"><%= user.quantity[index] %></i>
+          </div>
+        </div>
+      </div>
+  </div>
+  <% }) %>
+      <% } %>
+</section>
